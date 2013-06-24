@@ -5,7 +5,10 @@ package chat.kata
 class ChatController {
 	ChatService chatService
 
-	
+	static constraints = { seq istanceof Integer }
+
+
+
 	/**
 	 * Método listar (SEND)
 	 * Montará un json, al que le añadirá:	- messages(nick + message)
@@ -16,18 +19,20 @@ class ChatController {
 	def list(Integer seq) {
 		if(hasErrors()){
 			log.error("Invalid seq: ${errors.getFieldError('seq').rejectedValue}")
-			//TODO: implement me
+			render(status:400, contentType: "text/json"){   error="Invalid seq parameter" }
 		}
-		final Collection<ChatMessage> collector = []
-		final int lastSequence = chatService.collectChatMessages(collector, seq)
+		else{
+			final Collection<ChatMessage> collector = []
+			final int lastSequence = chatService.collectChatMessages(collector, seq)
 
-		render(contentType: "text/json"){
-			messages = []
-			for (int i = 0; i < collector.size(); i++) {
-				ChatMessage chat = collector[i]
-				messages.add(nick:chat.nick, message:chat.message)
+			render(contentType: "text/json"){
+				messages = []
+				for (int i = 0; i < collector.size(); i++) {
+					ChatMessage chat = collector[i]
+					messages.add(nick:chat.nick, message:chat.message)
+				}
+				last_seq = lastSequence
 			}
-			last_seq = lastSequence
 		}
 	}
 
@@ -37,9 +42,30 @@ class ChatController {
 	 * @return
 	 */
 	def send(){
-		def msgs = new ChatMessage(request.JSON)
-		chatService.putChatMessage(msgs);
-		
-		render(status: 201)
+		def jsonVar = request.JSON
+		def msgs = new ChatMessage(jsonVar)
+
+		if(jsonVar){
+
+			if(msgs.validate()){
+
+				chatService.putChatMessage(msgs);
+				render(status: 201)
+			}
+			else{//Es un JSON con constraints nick / message
+				if(msgs.errors.hasFieldErrors("nick")){
+					render(status:400, contentType: "text/json"){  error="Missing nick parameter"  }
+				}
+
+				if(msgs.errors.hasFieldErrors("message")){
+					render(status:400, contentType: "text/json"){  error="Missing message parameter"  }
+				}
+
+			}
+		}else{ // NO ES JSON
+
+			render(status:400, contentType: "text/json"){  error="Invalid body"  }
+		}
+
 	}
 }

@@ -64,10 +64,35 @@ class ChatControllerTests {
 		assert sentMessage == message
 	}
 	
-//	void testSendWithInvalidJson(){
-//		request.content = "not a json"
-//		controller.send()
-//		assert response.status == 400
-//		assert response.text == '{"error":"Invalid body"}'
-//	}
+
+	void testInvalidSeq(){
+		params.seq = 'invalid'
+		controller.list()
+		assert response.status == 400
+		assert response.text == '{"error":"Invalid seq parameter"}'
+	}
+	
+	
+	void testSendWithInvalidJson(){
+		request.content = "not a json"
+		controller.send()
+		assert response.status == 400
+		assert response.text == '{"error":"Invalid body"}'
+	}
+	
+	void testSendWithMissingNick(){
+		request.content = '{"message":"hi"}'
+		controller.send()
+		assert response.status == 400
+		assert response.text == '{"error":"Missing nick parameter"}'
+	}
+
+
+	void testSendWithMissingMessage(){
+		request.content = '{"nick":"bob"}'
+		controller.send()
+		assert response.status == 400
+		assert response.text == '{"error":"Missing message parameter"}'
+	}
+
 }
