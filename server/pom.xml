@@ -101,10 +101,13 @@
         <type>zip</type>
     </dependency>
                     
+
+
     <dependency>
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava</artifactId>
     	<version>14.0</version>
+    	<classifier>site</classifier>
     </dependency>
     </dependencies>
 
@@ -127,7 +130,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
+                            <skip>false</skip>
                         </configuration>
                     </execution>
                 </executions>
