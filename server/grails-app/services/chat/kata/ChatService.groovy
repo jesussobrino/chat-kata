@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class ChatService {
 
-	private ArrayList <ChatMessage> listaMensajes = new ArrayList<>()
+	private final ArrayList <ChatMessage> listaMensajes = new ArrayList<>()
 	private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 	private final Lock r = rwl.readLock();
 	private final Lock w = rwl.writeLock();
