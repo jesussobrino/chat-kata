@@ -43,9 +43,9 @@ class ChatController {
 	 */
 	def send(){
 		def jsonVar = request.JSON
-		def msgs = new ChatMessage(jsonVar)
 
 		if(jsonVar){
+			def msgs = new ChatMessage(jsonVar)
 
 			if(msgs.validate()){
 

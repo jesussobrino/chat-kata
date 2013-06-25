@@ -1,10 +1,13 @@
 package org.ejmc.android.simplechat;
 
+
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * Chat activity.
@@ -12,11 +15,18 @@ import android.view.MenuItem;
  * @author startic
  */
 public class ChatActivity extends Activity {
+	
+	TextView loggedUserEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
+		
+		loggedUserEditText = (TextView) findViewById(R.id.loggedUserEditText);
+        Bundle bundle = getIntent().getExtras();
+        loggedUserEditText.setText(bundle.getString("userName"));
+
 
 		// Show the Up button in the action bar.
 		setupActionBar();
