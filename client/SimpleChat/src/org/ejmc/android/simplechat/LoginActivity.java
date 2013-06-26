@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Main activity.
@@ -34,12 +35,39 @@ public class LoginActivity extends Activity {
 
 	}
 	
+	/**
+	 * Botón de login
+	 * @param view
+	 */
 	public void loginButton_OnClick(View view){
-		Intent i = new Intent(this, ChatActivity.class);
-        i.putExtra("userName", userNameTextEdit.getText().toString());
-        startActivity(i);
+		
+		Boolean loginConPassword = false;
+		
+		if(userNameTextEdit.getText() != null && !userNameTextEdit.getText().toString().equals("")){
+			
+			
+	        if(passwordTextEdit.getText() != null && passwordTextEdit.getText().toString().equals("")){
+	        	Toast.makeText(getApplicationContext(), R.string.alertSetPassword, Toast.LENGTH_LONG).show();
+	        	//Para habilitar login con Password obligatorio, se debe marcar como true la siguiente variable
+	        	loginConPassword = false;
+			}
+	        
+	        if(!loginConPassword){
+		        Intent i = new Intent(this, ChatActivity.class);
+		        i.putExtra("userName", userNameTextEdit.getText().toString());
+		        startActivity(i);
+	        }
+	        
+		}else{
+			Toast.makeText(getApplicationContext(), R.string.alertSetUser, Toast.LENGTH_LONG).show();
+		}
+		
 	}
 	
+	/**
+	 * Botón de Limpiar
+	 * @param view
+	 */
 	public void cleanButton_onClick(View view){
 		userNameTextEdit.setText("");
 		passwordTextEdit.setText("");

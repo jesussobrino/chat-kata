@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Literales -->
     <string name="app_name">SimpleChat</string>
     <string name="messages">Mensajes:</string>
     <string name="sendMessage">Enviar</string>
@@ -12,6 +13,12 @@
     <string name="password">Contraseña:</string>
     <string name="login">Login</string>
     <string name="cleanButton">Limpiar</string>
+    <string name="userSays">dice:</string>
     
+    
+    <!-- Mensajes de alerta -->
+    <string name="alertSetUser">Por favor, Introduzca Usuario</string>
+    <string name="alertSetMessage">No ha introducido ningún mensaje</string>
+    <string name="alertSetPassword">Atención: No ha introducido la contraseña</string>
 
 </resources>

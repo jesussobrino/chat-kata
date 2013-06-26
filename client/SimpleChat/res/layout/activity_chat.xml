@@ -36,25 +36,32 @@
         android:layout_marginBottom="10dip"
         android:text="@string/messages" />
 
-    <EditText
+<!--     <EditText -->
+<!--         android:id="@+id/messageHistory" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         android:layout_weight="1" -->
+<!--         android:clickable="true" -->
+<!--         android:editable="false" -->
+<!--         android:gravity="top" -->
+<!--         android:scrollbarSize="10px" -->
+<!--         android:scrollbars="vertical" /> -->
+
+    <ListView
         android:id="@+id/messageHistory"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:editable="false"
-        android:gravity="top"
-        android:scrollbarSize="10px"
-        android:scrollbars="vertical" />
+        android:layout_height="380dp" >
 
-    <LinearLayout
+    </ListView>
+    
+<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="4"
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/message"
+            android:id="@+id/messageEditText"
             android:layout_width="158dp"
             android:layout_height="fill_parent"
             android:gravity="top" />
@@ -63,13 +70,16 @@
             android:id="@+id/getMessageButton"
             android:layout_width="90dp"
             android:layout_height="fill_parent"
+            android:onClick="sendChat_Onclick"
             android:text="@string/sendMessage" />
 
         <Button
             android:id="@+id/sendMessageButton"
             android:layout_width="90dp"
             android:layout_height="fill_parent"
+            android:onClick="getChat_Onclick"
             android:text="@string/getMessage" />
+
     </LinearLayout>
 
 </LinearLayout>
