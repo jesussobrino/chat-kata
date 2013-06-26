@@ -1,6 +1,8 @@
 package org.ejmc.android.simplechat;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.ejmc.android.simplechat.model.ChatList;
 import org.ejmc.android.simplechat.model.Message;
@@ -43,8 +45,10 @@ public class ChatActivity extends Activity {
 //		}
 //	};
 	
-	
-	private Handler hilosHandler = new Handler() {
+	/**
+	 * Comunicación entre el hilo principal y secundario para método GET
+	 */
+	private Handler hiloGetMessageHandler = new Handler() {
 		/**
 		 * @param msgAndroid
 		 */
@@ -64,6 +68,22 @@ public class ChatActivity extends Activity {
 		}
 	};
 	
+	/**
+	 * Comunicación entre el hilo principal y secundario para método POST
+	 */
+	private Handler hiloPostMessageHandler = new Handler() {
+		/**
+		 * @param msgAndroid
+		 */
+		public void handleMessage(android.os.Message msgAndroid) {
+			String messageReceived = (String) msgAndroid.obj;
+			if(messageReceived != null){
+				//Se limpia el texto introducido una vez es enviado
+				messageEditText.setText("");
+			}
+		}
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,13 +91,34 @@ public class ChatActivity extends Activity {
 
 		loggedUserEditText = (TextView) findViewById(R.id.loggedUserEditText);
 		messageEditText = (EditText) findViewById(R.id.messageEditText);
-		//messageHistory = (ListView) findViewById(R.id.messageHistory);
 
+		//Se setea en la pantalla el nombre del usuario
 		Bundle bundle = getIntent().getExtras();
 		loggedUserEditText.setText(bundle.getString("userName"));
 
 		// Show the Up button in the action bar.
 		setupActionBar();
+
+		
+		// Creamos un hilo que se encargue de buscar nuevos mensajes 
+		new Thread(new Runnable() {
+
+			//Creamos un timer para que haga la consulta cada 10 segundos 
+			Timer timer;
+
+			@Override
+			public void run() {
+				timer = new Timer();
+				timer.scheduleAtFixedRate(timerTask, 0, 10000);
+			}
+
+			TimerTask timerTask = new TimerTask() {
+				public void run() {
+					runHiloGetMessages();
+				}
+			};
+
+		}).start();
 
 	}
 
@@ -96,22 +137,30 @@ public class ChatActivity extends Activity {
 					Message message = new Message();
 					message.setMessage(messageEditText.getText().toString());
 					message.setUserMessage(loggedUserEditText.getText().toString());
+
 					try {
 
 						netRequests.chatPOST(message, handler);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					
+					android.os.Message mensajeAnd = new android.os.Message();
+					mensajeAnd.obj = message.getMessage();
+					hiloPostMessageHandler.sendMessage(mensajeAnd);
 
 				}
 			}).start();
 			
-			messageEditText.setText("");
+			//Se actualiza la lista de mensajes
+			getChat_Onclick(view);
 			
 		}else{
 			Toast.makeText(getApplicationContext(), R.string.alertSetMessage, Toast.LENGTH_LONG).show();
 		}
-
+		
+		//Se limpia el mensaje de texto enviado 
+		messageEditText.setText("");
 	}
 	
 	
@@ -122,25 +171,31 @@ public class ChatActivity extends Activity {
 	public void getChat_Onclick(View view) {
 		new Thread(new Runnable() {
 			public void run() {
-				NetRequests netRequests = new NetRequests();
-				NetResponseHandler<ChatList> handler = new NetResponseHandler<ChatList>();
-				
-				try {
-
-					netRequests.chatGET(lastSequence, handler);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				android.os.Message mensajeAnd = new android.os.Message();
-				mensajeAnd.obj = handler.getChatList();
-				hilosHandler.sendMessage(mensajeAnd);
-
-
+				runHiloGetMessages();
 			}
 		}).start();
 
 	}
+	
+	/**
+	 * Ejecutará el hilo que devolverá todos los mensajes
+	 */
+	private void runHiloGetMessages(){
+		NetRequests netRequests = new NetRequests();
+		NetResponseHandler<ChatList> handler = new NetResponseHandler<ChatList>();
+		
+		try {
+
+			netRequests.chatGET(lastSequence, handler);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		android.os.Message mensajeAnd = new android.os.Message();
+		mensajeAnd.obj = handler.getChatList();
+		hiloGetMessageHandler.sendMessage(mensajeAnd);
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

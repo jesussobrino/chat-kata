@@ -50,6 +50,8 @@
     <ListView
         android:id="@+id/messageHistory"
         android:layout_width="fill_parent"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
         android:layout_height="380dp" >
 
     </ListView>

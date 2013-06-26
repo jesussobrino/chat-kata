@@ -19,7 +19,6 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity {
 
-	private Button loginButton;
 	private EditText userNameTextEdit;
 	private EditText passwordTextEdit;
 
@@ -27,11 +26,9 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		loginButton = (Button) findViewById(R.id.loginButton);
+
 		userNameTextEdit = (EditText) findViewById(R.id.userNameEditText);
 		passwordTextEdit = (EditText) findViewById(R.id.passwordEditText);
-
-		loginButton = (Button) findViewById(R.id.loginButton);
 
 	}
 	
